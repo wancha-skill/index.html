@@ -5,142 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wancha Skill - የችሎታዎ መድረክ</title>
     <style>
-        /* 1. አጠቃላይ የገጹ ዳራ እና ፎንት */
+        /* 1. አጠቃላይ የገጹ ዲዛይን */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a2e; /* ጥቁር ሰማያዊ Gaming Theme */
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #1a1a2e;
+            color: white;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-            color: white;
             text-align: center;
-            overflow: hidden; /* ገጹ ወደ ታች እንዳይዝረከረክ */
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 800px;
+        .page {
+            display: none; /* መጀመሪያ ሁሉንም ገጾች ደብቅ */
+            width: 100%;
+            max-width: 400px;
             padding: 20px;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
-        /* 2. በሚያምር ቀለም የሚለዋወጠው Wancha Skill */
+        .active { display: block; } /* አሁኑኑ የሚታየው ገጽ */
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 2. የብራንድ ስም አኒሜሽን */
         .brand-name {
-            font-size: clamp(3rem, 10vw, 5rem); /* ለሞባይልም ለኮምፒውተርም እንዲስማማ */
+            font-size: 3.5rem;
             font-weight: 900;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, #e94560, #ff4d6d, #4ecca3, #e94560);
+            background: linear-gradient(90deg, #e94560, #4ecca3, #ff4d6d);
             background-size: 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: colorFlow 5s linear infinite;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
+            animation: flow 5s linear infinite;
         }
 
-        @keyframes colorFlow {
-            0% { background-position: 0%; }
-            100% { background-position: 100%; }
-        }
+        @keyframes flow { 0% { background-position: 0%; } 100% { background-position: 100%; } }
 
-        /* 3. ጥቅሱ (Slogan) */
-        .slogan {
-            font-size: 1.2rem;
-            color: #95a5a6;
-            font-style: italic;
-            margin: 20px auto;
-            max-width: 600px;
-            line-height: 1.6;
-            border-left: 3px solid #e94560;
-            padding-left: 15px;
-        }
+        .slogan { font-size: 1rem; color: #95a5a6; font-style: italic; margin-bottom: 30px; line-height: 1.6; }
 
-        /* 4. የቁልፎቹ (Buttons) ዲዛይን */
-        .button-group {
-            margin-top: 40px;
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap; /* ለሞባይል እንዲያመች */
-        }
-
+        /* 3. የቁልፎች (Buttons) ዲዛይን */
+        .btn-group { display: flex; flex-direction: column; gap: 15px; }
         .btn {
-            padding: 15px 40px;
-            font-size: 18px;
-            font-weight: bold;
+            padding: 15px;
             border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-block;
-            border: 2px solid transparent;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
         }
+        .login-btn { background: #e94560; color: white; }
+        .signup-btn { border: 2px solid #4ecca3; color: #4ecca3; background: transparent; }
+        .btn:hover { transform: scale(1.05); }
 
-        /* Login Button */
-        .btn-login {
-            background-color: #e94560;
-            color: white;
-        }
-
-        .btn-login:hover {
-            background-color: transparent;
-            border-color: #e94560;
-            color: #e94560;
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(233, 69, 96, 0.4);
-        }
-
-        /* Sign Up Button */
-        .btn-signup {
-            background-color: transparent;
-            border-color: #4ecca3;
-            color: #4ecca3;
-        }
-
-        .btn-signup:hover {
-            background-color: #4ecca3;
-            color: #1a1a2e;
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(78, 204, 163, 0.4);
-        }
-
-        /* ለጌጥ የሚሆን ከበስተጀርባ የሚንቀሳቀስ ብርሃን */
-        .light-bg {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: rgba(233, 69, 96, 0.1);
-            filter: blur(100px);
-            border-radius: 50%;
-            z-index: -1;
-            top: 20%;
-            left: 30%;
-            animation: moveLight 10s infinite alternate;
-        }
-
-        @keyframes moveLight {
-            from { transform: translate(0, 0); }
-            to { transform: translate(100px, 100px); }
-        }
+        /* 4. የፎርም (Forms) ዲዛይን */
+        .form-box { background: #16213e; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #0f3460; color: white; box-sizing: border-box; }
+        .back-link { display: block; margin-top: 20px; color: #95a5a6; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="light-bg"></div>
-
-    <div class="container">
-        <div class="brand-name">Wancha Skill</div>
-        
-        <p class="slogan">
-            "በ Wancha Skill መድረክ ላይ ዕድል ተመልካች ናት፤ ባለቤቱ ግን ያንተ ብልሃት ነው። ይጫወቱ፣ ይብለጡ፣ በኩራትም ይሸለሙ!"
-        </p>
-
-        <div class="button-group">
-            <a href="login.html" class="btn btn-login">ይግቡ (Login)</a>
-            <a href="signup.html" class="btn btn-signup">ይመዝገቡ (Sign Up)</a>
+    <div id="homePage" class="page active">
+        <div class="brand-name">WANCHA SKILL</div>
+        <p class="slogan">"በ Wancha Skill መድረክ ላይ ዕድል ተመልካች ናት፤ ባለቤቱ ግን ያንተ ብልሃት ነው። ይጫወቱ፣ ይብለጡ፣ በኩራትም ይሸለሙ!"</p>
+        <div class="btn-group">
+            <button class="btn login-btn" onclick="showPage('loginPage')">ይግቡ (Login)</button>
+            <button class="btn signup-btn" onclick="showPage('signupPage')">ይመዝገቡ (Sign Up)</button>
         </div>
     </div>
+
+    <div id="loginPage" class="page">
+        <div class="form-box">
+            <h2 style="color: #e94560;">እንኳን ተመለሱ!</h2>
+            <input type="text" placeholder="የስልክ ቁጥር">
+            <input type="password" placeholder="ሚስጥር ቃል">
+            <button class="btn login-btn" style="width: 100%;">ይግቡ</button>
+            <span class="back-link" onclick="showPage('homePage')">ወደ ኋላ ተመለስ</span>
+        </div>
+    </div>
+
+    <div id="signupPage" class="page">
+        <div class="form-box">
+            <h2 style="color: #4ecca3;">አዲስ አካውንት</h2>
+            <input type="text" placeholder="ሙሉ ስም">
+            <input type="text" placeholder="የስልክ ቁጥር">
+            <input type="password" placeholder="ሚስጥር ቃል">
+            <button class="btn signup-btn" style="width: 100%; background: #4ecca3; color: #1a1a2e;">ተመዝገብ</button>
+            <span class="back-link" onclick="showPage('homePage')">ወደ ኋላ ተመለስ</span>
+        </div>
+    </div>
+
+    <script>
+        // ገጾቹን ለመቀያየር የሚያገለግል ፈንክሽን
+        function showPage(pageId) {
+            // ሁሉንም ገጾች ደብቅ
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // የተመረጠውን ገጽ ብቻ አሳይ
+            document.getElementById(pageId).classList.add('active');
+        }
+    </script>
 
 </body>
 </html>
