@@ -3,95 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amde-ዋንጫ</title>
+    <title>Amde-ዋንጫ | እውቀት</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes colorChange {
-            0% { color: #16a34a; } 50% { color: #facc15; } 100% { color: #dc2626; }
+        @keyframes rainbow {
+            0% { color: #16a34a; } 33% { color: #facc15; } 66% { color: #dc2626; } 100% { color: #16a34a; }
         }
-        .animate-title { animation: colorChange 3s infinite; }
-        .dama-board { display: grid; grid-template-columns: repeat(8, 1fr); width: 320px; height: 320px; border: 5px solid #451a03; }
-        .cell { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .piece { width: 30px; height: 30px; rounded: 50%; border-radius: 50%; }
+        .animate-title { animation: rainbow 4s infinite linear; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-50 font-sans">
 
-    <div id="auth-screen" class="flex flex-col items-center justify-center min-h-screen">
-        <h1 class="text-5xl font-black mb-8 animate-title text-center">Amde-ዋንጫ</h1>
-        <div class="bg-white p-8 rounded-[2rem] shadow-2xl w-80 border-b-8 border-yellow-500">
-            <input type="text" placeholder="ሙሉ ስም" class="w-full p-3 mb-4 border rounded-xl outline-none">
-            <input type="text" placeholder="ስልክ ቁጥር" class="w-full p-3 mb-4 border rounded-xl outline-none">
-            <input type="password" placeholder="ሚስጥር ቃል" class="w-full p-3 mb-6 border rounded-xl outline-none">
-            <button onclick="showScreen('dashboard')" class="w-full bg-orange-500 text-white p-3 rounded-xl font-bold text-xl">ግባ / ተመዝገብ</button>
-        </div>
-    </div>
+    <div id="app" class="min-h-screen flex flex-col">
+        <header class="p-6 text-center">
+            <h1 class="text-5xl font-black animate-title">Amde-ዋንጫ</h1>
+        </header>
 
-    <div id="dashboard-screen" class="hidden p-6 text-center">
-        <h1 class="text-3xl font-black mb-6">አምደ-ዋንጫ</h1>
-        <div class="bg-green-100 text-green-700 px-6 py-2 rounded-full inline-block mb-8 font-bold border border-green-300">🟢 124 ሰዎች ኦንላይን አሉ</div>
-        <div class="grid grid-cols-1 gap-4 max-w-xs mx-auto">
-            <button onclick="showScreen('dama')" class="bg-orange-500 text-white p-10 rounded-3xl text-2xl font-bold shadow-lg">🎲 ዳማ</button>
-            <button class="bg-blue-600 text-white p-6 rounded-3xl font-bold shadow-lg">🌍 ጠቅላላ እውቀት</button>
-            <button class="bg-purple-600 text-white p-6 rounded-3xl font-bold shadow-lg">⛪ መንፈሳዊ እውቀት</button>
-            <button class="bg-green-600 text-white p-6 rounded-3xl font-bold shadow-lg">📖 ትምህርታዊ ጥያቄ</button>
-        </div>
-    </div>
+        <main class="flex-grow flex items-center justify-center p-4">
+            <div id="auth-screen" class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl border-b-8 border-yellow-500">
+                <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">እንኳን ደህና መጡ</h2>
+                <input type="text" id="userName" placeholder="ሙሉ ስም" class="w-full p-4 mb-4 border-2 border-gray-100 rounded-2xl outline-none focus:border-orange-400">
+                <input type="text" placeholder="ስልክ ቁጥር (10 ዲጂት)" class="w-full p-4 mb-4 border-2 border-gray-100 rounded-2xl outline-none">
+                <input type="password" placeholder="ሚስጥር ቃል (6 ዲጂት)" class="w-full p-4 mb-6 border-2 border-gray-100 rounded-2xl outline-none">
+                <button onclick="showDashboard()" class="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white p-4 rounded-2xl font-black text-xl shadow-lg hover:scale-105 transition">ግባ / ተመዝገብ</button>
+            </div>
 
-    <div id="dama-screen" class="hidden flex flex-col items-center p-4">
-        <button onclick="showScreen('dashboard')" class="mb-6 bg-white px-4 py-2 rounded-xl shadow font-bold self-start">⬅ ተመለስ</button>
-        <div id="board" class="dama-board shadow-2xl"></div>
-        <p class="mt-6 font-bold text-orange-900 bg-orange-100 p-3 rounded-lg">ጠጠር ነክተው ባዶ ቦታ ላይ ያንቀሳቅሱ</p>
+            <div id="dashboard-screen" class="hidden w-full max-w-2xl text-center">
+                <div class="bg-green-100 text-green-700 px-6 py-2 rounded-full inline-block mb-10 font-bold border border-green-300">🟢 124 ሰዎች ኦንላይን አሉ</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <button onclick="startQuiz('መንፈሳዊ')" class="bg-purple-600 text-white p-10 rounded-[2rem] shadow-xl hover:-translate-y-2 transition border-b-8 border-purple-800">
+                        <span class="text-5xl block mb-2">⛪</span> <span class="text-2xl font-bold">መንፈሳዊ እውቀት</span>
+                    </button>
+                    <button onclick="startQuiz('ጠቅላላ')" class="bg-blue-600 text-white p-10 rounded-[2rem] shadow-xl hover:-translate-y-2 transition border-b-8 border-blue-800">
+                        <span class="text-5xl block mb-2">🌍</span> <span class="text-2xl font-bold">ጠቅላላ እውቀት</span>
+                    </button>
+                    <button onclick="startQuiz('ትምህርታዊ')" class="bg-green-600 text-white p-10 rounded-[2rem] shadow-xl hover:-translate-y-2 transition border-b-8 border-green-800">
+                        <span class="text-5xl block mb-2">📖</span> <span class="text-2xl font-bold">ትምህርታዊ ጥያቄ</span>
+                    </button>
+                    <button class="bg-gray-400 text-white p-10 rounded-[2rem] shadow-xl cursor-not-allowed opacity-50">
+                        <span class="text-5xl block mb-2">🏆</span> <span class="text-2xl font-bold">የክብር መዝገብ</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="quiz-screen" class="hidden w-full max-w-lg bg-white p-8 rounded-[2.5rem] shadow-2xl relative">
+                <div id="timer" class="absolute -top-6 left-1/2 -translate-x-1/2 bg-red-600 text-white w-16 h-16 rounded-full flex items-center justify-center font-bold text-2xl border-4 border-white shadow-lg">30</div>
+                <div class="mt-4">
+                    <p id="question-text" class="text-xl font-bold text-gray-800 mb-8 text-center leading-relaxed"></p>
+                    <div id="options-container" class="space-y-4">
+                        </div>
+                </div>
+            </div>
+
+            <div id="result-screen" class="hidden w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl text-center">
+                <h2 class="text-3xl font-black mb-4 text-orange-600">ውጤት</h2>
+                <div class="text-6xl mb-6">🎉</div>
+                <p id="score-text" class="text-2xl font-bold text-gray-700 mb-8"></p>
+                <button onclick="showDashboard()" class="bg-gray-800 text-white px-8 py-3 rounded-2xl font-bold hover:bg-gray-700 transition">ወደ ማውጫ ተመለስ</button>
+            </div>
+        </main>
     </div>
 
     <script>
-        function showScreen(screenId) {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('dashboard-screen').classList.add('hidden');
-            document.getElementById('dama-screen').classList.add('hidden');
-            document.getElementById(screenId + '-screen').classList.remove('hidden');
-            if(screenId === 'dama') createDama();
+        // የጥያቄዎች ዳታቤዝ (ለማሳያ የተወሰኑ)
+        // አንተ እዚህ ውስጥ እስከ 1000 ጥያቄዎችን መጨመር ትችላለህ
+        const quizData = {
+            'መንፈሳዊ': [
+                { q: "መጽሐፍ ቅዱስ በስንት ዋና ዋና ክፍሎች ይከፈላል?", a: ["2", "3", "4", "5"], correct: 0 },
+                { q: "የመጀመሪያው የሰው ልጅ ማን ነው?", a: ["ኖኅ", "አብርሃም", "አዳም", "ሙሴ"], correct: 2 },
+                { q: "በዓለም ላይ ትልቁ ሃይማኖታዊ መጽሐፍ የትኛው ነው?", a: ["ቁርዓን", "መጽሐፍ ቅዱስ", "ኦሪት", "ወንጌል"], correct: 1 }
+            ],
+            'ጠቅላላ': [
+                { q: "የኢትዮጵያ ዋና ከተማ ማን ናት?", a: ["ባህር ዳር", "አዲስ አበባ", "ድሬዳዋ", "ሐዋሳ"], correct: 1 },
+                { q: "ናይል ወንዝ የት ሀገር ይገኛል?", a: ["ግብፅ", "ሱዳን", "ኢትዮጵያ", "ሁሉም"], correct: 3 }
+            ]
+        };
+
+        let currentCategory = '';
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timerValue = 30;
+        let timerInterval;
+
+        function showDashboard() {
+            hideAll();
+            document.getElementById('dashboard-screen').classList.remove('hidden');
         }
 
-        let selected = null;
-        let boardData = Array(64).fill(null);
-
-        function createDama() {
-            const boardEl = document.getElementById('board');
-            boardEl.innerHTML = '';
-            for (let i = 0; i < 64; i++) {
-                const row = Math.floor(i / 8);
-                const col = i % 8;
-                const isDark = (row + col) % 2 !== 0;
-                
-                if (isDark && row < 3) boardData[i] = 'red';
-                else if (isDark && row > 4) boardData[i] = 'white';
-
-                const cell = document.createElement('div');
-                cell.className = `cell ${isDark ? 'bg-amber-800' : 'bg-amber-100'}`;
-                cell.onclick = () => handleClick(i);
-                
-                if (boardData[i]) {
-                    const piece = document.createElement('div');
-                    piece.className = `piece ${boardData[i] === 'red' ? 'bg-red-600 border-2 border-red-900' : 'bg-gray-100 border-2 border-gray-400'}`;
-                    cell.appendChild(piece);
-                }
-                boardEl.appendChild(cell);
-            }
+        function startQuiz(category) {
+            currentCategory = category;
+            currentQuestionIndex = 0;
+            score = 0;
+            hideAll();
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            loadQuestion();
         }
 
-        function handleClick(i) {
-            if (selected === null) {
-                if (boardData[i]) {
-                    selected = i;
-                    document.querySelectorAll('.cell')[i].style.border = "2px solid yellow";
-                }
-            } else {
-                boardData[i] = boardData[selected];
-                boardData[selected] = null;
-                selected = null;
-                createDama();
+        function loadQuestion() {
+            clearInterval(timerInterval);
+            timerValue = 30;
+            document.getElementById('timer').innerText = timerValue;
+            
+            const questions = quizData[currentCategory] || quizData['ጠቅላላ'];
+            if (currentQuestionIndex >= questions.length) {
+                showResult();
+                return;
             }
+
+            const currentQ = questions[currentQuestionIndex];
+            document.getElementById('question-text').innerText = currentQ.q;
+            
+            const optionsDiv = document.getElementById('options-container');
+            optionsDiv.innerHTML = '';
+            currentQ.a.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-4 text-left border-2 border-gray-100 rounded-2xl hover:border-orange-400 hover:bg-orange-50 transition font-bold text-gray-700 shadow-sm";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index);
+                optionsDiv.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timerValue--;
+                document.getElementById('timer').innerText = timerValue;
+                if (timerValue <= 0) {
+                    clearInterval(timerInterval);
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(index) {
+            const questions = quizData[currentCategory] || quizData['ጠቅላላ'];
+            if (index === questions[currentQuestionIndex].correct) {
+                score++;
+            }
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function showResult() {
+            hideAll();
+            document.getElementById('result-screen').classList.remove('hidden');
+            const total = (quizData[currentCategory] || quizData['ጠቅላላ']).length;
+            document.getElementById('score-text').innerText = `ከ ${total} ጥያቄዎች ውስጥ ${score} መልሰዋል!`;
+        }
+
+        function hideAll() {
+            ['auth-screen', 'dashboard-screen', 'quiz-screen', 'result-screen'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
         }
     </script>
 </body>
