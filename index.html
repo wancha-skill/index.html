@@ -1,158 +1,115 @@
-import React, { useState, useEffect } from 'react';
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amde-ዋንጫ</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse-colors {
+            0% { color: #16a34a; } /* Green */
+            50% { color: #ca8a04; } /* Yellow */
+            100% { color: #dc2626; } /* Red */
+        }
+        .animate-amde { animation: pulse-colors 3s infinite; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
 
-// --- Amde-Wancha Full Application ---
-const AmdeWanchaApp = () => {
-  const [screen, setScreen] = useState('auth'); // auth, dashboard, dama, quiz
-  const [isLogin, setIsLogin] = useState(false);
-  const [selectedSquare, setSelectedSquare] = useState(null);
-  const [onlineCount, setOnlineCount] = useState(124);
+    <script type="text/babel">
+        const { useState } = React;
 
-  // 1. የዳማ ሰሌዳ መጀመሪያ ሲሰደር (Initial Board Setup)
-  const createBoard = () => {
-    let board = Array(64).fill(null);
-    for (let i = 0; i < 64; i++) {
-      const row = Math.floor(i / 8);
-      const col = i % 8;
-      if ((row + col) % 2 !== 0) {
-        if (row < 3) board[i] = { type: 'red', isKing: false };
-        if (row > 4) board[i] = { type: 'white', isKing: false };
-      }
-    }
-    return board;
-  };
-  const [board, setBoard] = useState(createBoard());
+        const AmdeWancha = () => {
+            const [screen, setScreen] = useState('auth');
+            const [isLogin, setIsLogin] = useState(false);
+            const [selectedSquare, setSelectedSquare] = useState(null);
 
-  // 2. የዳማ እንቅስቃሴ ሎጂክ (Basic Move Logic)
-  const handleSquareClick = (index) => {
-    if (selectedSquare === null) {
-      if (board[index]) setSelectedSquare(index);
-    } else {
-      const newBoard = [...board];
-      // የቆየውን ቦታ ወደ አዲሱ መቀየር
-      newBoard[index] = board[selectedSquare];
-      newBoard[selectedSquare] = null;
-      setBoard(newBoard);
-      setSelectedSquare(null);
-    }
-  };
+            // ዳማ ሰሌዳ አጀማመር
+            const [board, setBoard] = useState(() => {
+                let b = Array(64).fill(null);
+                for (let i = 0; i < 64; i++) {
+                    const row = Math.floor(i / 8);
+                    const col = i % 8;
+                    if ((row + col) % 2 !== 0) {
+                        if (row < 3) b[i] = 'red';
+                        if (row > 4) b[i] = 'white';
+                    }
+                }
+                return b;
+            });
 
-  // --- Screens ---
+            const handleMove = (i) => {
+                if (selectedSquare === null) {
+                    if (board[i]) setSelectedSquare(i);
+                } else {
+                    const newBoard = [...board];
+                    newBoard[i] = board[selectedSquare];
+                    newBoard[selectedSquare] = null;
+                    setBoard(newBoard);
+                    setSelectedSquare(null);
+                }
+            };
 
-  // ሀ. መግቢያ እና ምዝገባ (Auth Screen)
-  const AuthScreen = () => (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      <div className="text-center mb-8">
-        <h1 className="text-6xl font-black animate-pulse bg-clip-text text-transparent bg-gradient-to-r from-green-600 via-yellow-500 to-red-600">
-          Amde-ዋንጫ
-        </h1>
-        <p className="text-gray-500 mt-2 font-medium">የእውቀት እና የክህሎት ማዕከል</p>
-      </div>
+            if (screen === 'auth') return (
+                <div class="flex flex-col items-center justify-center min-h-screen p-4">
+                    <h1 class="text-6xl font-black mb-8 animate-amde">Amde-ዋንጫ</h1>
+                    <div class="w-full max-w-md bg-white p-8 rounded-[2rem] shadow-2xl border-b-[10px] border-yellow-500">
+                        <div class="flex mb-6 bg-gray-100 rounded-xl p-1">
+                            <button onClick={() => setIsLogin(false)} class={`flex-1 py-2 rounded-lg font-bold ${!isLogin ? 'bg-white text-orange-600 shadow' : 'text-gray-500'}`}>Sign Up</button>
+                            <button onClick={() => setIsLogin(true)} class={`flex-1 py-2 rounded-lg font-bold ${isLogin ? 'bg-white text-orange-600 shadow' : 'text-gray-500'}`}>Login</button>
+                        </div>
+                        <div class="space-y-4">
+                            {!isLogin && <input type="text" placeholder="ሙሉ ስም" class="w-full p-4 border rounded-2xl outline-none focus:border-orange-400" />}
+                            <input type="text" placeholder="የስልክ ቁጥር (10 ዲጂት)" class="w-full p-4 border rounded-2xl outline-none" />
+                            <input type="password" placeholder="ሚስጥር ቃል (6 ዲጂት)" class="w-full p-4 border rounded-2xl outline-none" />
+                            <button onClick={() => setScreen('dashboard')} class="w-full bg-orange-500 text-white p-4 rounded-2xl font-black text-xl shadow-lg">ግባ</button>
+                        </div>
+                    </div>
+                </div>
+            );
 
-      <div className="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl border-b-[10px] border-yellow-500">
-        <div className="flex mb-8 bg-gray-100 rounded-2xl p-1">
-          <button onClick={() => setIsLogin(false)} className={`flex-1 py-3 rounded-xl font-bold transition ${!isLogin ? 'bg-white text-orange-600 shadow' : 'text-gray-500'}`}>Sign Up</button>
-          <button onClick={() => setIsLogin(true)} className={`flex-1 py-3 rounded-xl font-bold transition ${isLogin ? 'bg-white text-orange-600 shadow' : 'text-gray-500'}`}>Login</button>
-        </div>
+            if (screen === 'dashboard') return (
+                <div class="p-6 max-w-4xl mx-auto text-center">
+                    <h1 class="text-4xl font-black mb-6 text-gray-800">አምደ-ዋንጫ</h1>
+                    <div class="bg-green-100 text-green-700 px-6 py-2 rounded-full inline-block mb-10 font-bold border border-green-300">🟢 124 ሰዎች ኦንላይን አሉ</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <button onClick={() => setScreen('dama')} class="bg-orange-500 h-40 rounded-[2rem] text-white flex flex-col items-center justify-center shadow-xl border-b-8 border-orange-700">
+                            <span class="text-5xl mb-2">🎲</span> <span class="text-2xl font-bold">ዳማ</span>
+                        </button>
+                        <button class="bg-blue-600 h-40 rounded-[2rem] text-white flex flex-col items-center justify-center shadow-xl border-b-8 border-blue-800">
+                            <span class="text-5xl mb-2">🌍</span> <span class="text-2xl font-bold">ጠቅላላ እውቀት</span>
+                        </button>
+                        <button class="bg-purple-600 h-40 rounded-[2rem] text-white flex flex-col items-center justify-center shadow-xl border-b-8 border-purple-800">
+                            <span class="text-5xl mb-2">⛪</span> <span class="text-2xl font-bold">መንፈሳዊ እውቀት</span>
+                        </button>
+                        <button class="bg-green-600 h-40 rounded-[2rem] text-white flex flex-col items-center justify-center shadow-xl border-b-8 border-green-800">
+                            <span class="text-5xl mb-2">📖</span> <span class="text-2xl font-bold">ትምህርታዊ ጥያቄ</span>
+                        </button>
+                    </div>
+                </div>
+            );
 
-        <div className="space-y-4">
-          {!isLogin && (
-            <input type="text" placeholder="ሙሉ ስም" className="w-full p-4 border-2 border-gray-100 rounded-2xl outline-none focus:border-orange-400 transition" />
-          )}
-          <input type="text" placeholder="የስልክ ቁጥር (10 ዲጂት)" maxLength="10" className="w-full p-4 border-2 border-gray-100 rounded-2xl outline-none focus:border-orange-400" />
-          <input type="password" placeholder="ሚስጥር ቃል (6 ዲጂት)" maxLength="6" className="w-full p-4 border-2 border-gray-100 rounded-2xl outline-none focus:border-orange-400" />
-          
-          <button 
-            onClick={() => setScreen('dashboard')} 
-            className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white p-4 rounded-2xl font-black text-xl shadow-lg hover:brightness-110 active:scale-95 transition"
-          >
-            {isLogin ? "ግባ" : "ተመዝገብ"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+            if (screen === 'dama') return (
+                <div class="flex flex-col items-center p-4 min-h-screen bg-amber-50">
+                    <button onClick={() => setScreen('dashboard')} class="mb-6 bg-white px-6 py-2 rounded-xl shadow font-bold self-start">⬅ ተመለስ</button>
+                    <div class="grid grid-cols-8 w-[340px] h-[340px] md:w-[480px] md:h-[480px] border-[10px] border-amber-950 shadow-2xl rounded-lg overflow-hidden">
+                        {board.map((cell, i) => (
+                            <div key={i} onClick={() => handleMove(i)} class={`flex items-center justify-center cursor-pointer ${ (Math.floor(i/8) + (i%8)) % 2 === 0 ? 'bg-amber-100' : 'bg-amber-800' } ${selectedSquare === i ? 'ring-4 ring-yellow-400 inset' : ''}`}>
+                                {cell === 'red' && <div class="w-[80%] h-[80%] bg-red-600 rounded-full border-4 border-red-800 shadow-md"></div>}
+                                {cell === 'white' && <div class="w-[80%] h-[80%] bg-gray-100 rounded-full border-4 border-gray-300 shadow-md"></div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
 
-  // ለ. ዋና ማውጫ (Dashboard Screen)
-  const DashboardScreen = () => (
-    <div className="min-h-screen bg-gray-50">
-      <div className="p-6 text-center">
-        <h1 className="text-3xl font-black text-gray-800 tracking-tight">አምደ-ዋንጫ</h1>
-        <div className="inline-flex items-center gap-2 mt-4 bg-white px-6 py-2 rounded-full shadow-sm border border-green-200">
-          <span className="w-3 h-3 bg-green-500 rounded-full animate-ping"></span>
-          <span className="text-green-700 font-bold">{onlineCount} ሰዎች ኦንላይን አሉ</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-6 max-w-4xl mx-auto">
-        {[
-          { id: 'dama', name: "ዳማ", icon: "🎲", color: "bg-orange-500" },
-          { id: 'quiz', name: "ጠቅላላ እውቀት", icon: "🌍", color: "bg-blue-600" },
-          { id: 'quiz', name: "መንፈሳዊ እውቀት", icon: "⛪", color: "bg-purple-600" },
-          { id: 'quiz', name: "ትምህርታዊ ጥያቄ", icon: "📖", color: "bg-green-600" }
-        ].map((item) => (
-          <button 
-            key={item.name} 
-            onClick={() => setScreen(item.id)}
-            className={`${item.color} h-44 rounded-[2.5rem] text-white flex flex-col items-center justify-center shadow-xl hover:-translate-y-2 transition-all border-b-8 border-black/20`}
-          >
-            <span className="text-6xl mb-2">{item.icon}</span>
-            <span className="text-2xl font-black">{item.name}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-
-  // ሐ. የዳማ ጨዋታ (Dama Game Screen)
-  const DamaScreen = () => (
-    <div className="min-h-screen bg-amber-50 flex flex-col items-center p-4">
-      <div className="w-full max-w-md flex justify-between items-center mb-8">
-        <button onClick={() => setScreen('dashboard')} className="bg-white px-4 py-2 rounded-xl shadow font-bold text-gray-600">⬅ ተመለስ</button>
-        <h2 className="text-2xl font-black text-amber-900">የዳማ ሰሌዳ</h2>
-        <div className="w-10"></div>
-      </div>
-
-      <div className="grid grid-cols-8 w-[340px] h-[340px] md:w-[480px] md:h-[480px] border-[10px] border-amber-950 shadow-2xl rounded-lg overflow-hidden">
-        {board.map((cell, i) => (
-          <div 
-            key={i} 
-            onClick={() => handleSquareClick(i)}
-            className={`relative flex items-center justify-center cursor-pointer ${ (Math.floor(i/8) + (i%8)) % 2 === 0 ? 'bg-amber-100' : 'bg-amber-800' }`}
-          >
-            {selectedSquare === i && <div className="absolute inset-0 bg-yellow-400/40 animate-pulse"></div>}
-            {cell && (
-              <div className={`w-[80%] h-[80%] rounded-full shadow-lg transform transition-transform border-4 ${cell.type === 'red' ? 'bg-red-600 border-red-800' : 'bg-gray-100 border-gray-400'}`}>
-                {cell.isKing && <div className="text-center text-white text-xs mt-1">👑</div>}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-10 p-4 bg-white rounded-2xl shadow-inner border-2 border-amber-200">
-        <p className="text-amber-900 font-bold">
-          {selectedSquare !== null ? "አንድ ጠጠር መርጠሃል - ባዶ ቦታ በመንካት አንቀሳቅስ" : "ለመጫወት የራስህን ጠጠር ንካ"}
-        </p>
-      </div>
-    </div>
-  );
-
-  // --- Main Render Logic ---
-  return (
-    <div className="font-sans select-none overflow-x-hidden">
-      {screen === 'auth' && <AuthScreen />}
-      {screen === 'dashboard' && <DashboardScreen />}
-      {screen === 'dama' && <DamaScreen />}
-      {screen === 'quiz' && (
-        <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center">
-          <div className="text-6xl mb-4">🚀</div>
-          <h2 className="text-3xl font-bold text-gray-800">ይህ ክፍል በቅርቡ ይከፈታል!</h2>
-          <p className="text-gray-500 mt-2">የጥያቄና መልስ መድረኩ በመገንባት ላይ ነው።</p>
-          <button onClick={() => setScreen('dashboard')} className="mt-8 bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold">ወደ ማውጫ ተመለስ</button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default AmdeWanchaApp;
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AmdeWancha />);
+    </script>
+</body>
+</html>
